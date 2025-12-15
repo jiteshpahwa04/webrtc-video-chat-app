@@ -4,6 +4,9 @@ import http from "http";
 import { Server } from "socket.io";
 import serverConfig from "./config/serverConfig";
 
+// Install peer server using "npm install peer -g"
+// and run it using "peerjs --port 9000 --key peerjs --path /myapp"
+
 const app = express();
 app.use(cors());
 
