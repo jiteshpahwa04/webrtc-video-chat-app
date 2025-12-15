@@ -1,0 +1,20 @@
+{
+    "extends": "tslint:recommended",
+    "defaultSeverity": "error",
+    "rules": {
+        "no-console": {
+            "severity": "warning",
+            "options": ["debug", "info", "trace", "log"]
+        },
+        "max-line-length": [true, 120],
+        "semicolon": {
+            "options": [
+                "always"
+            ]
+        }
+    },
+    "jsonRules": {
+        "check-keys": true,
+        "no-trailing-comma": true
+    }
+}
