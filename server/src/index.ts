@@ -3,6 +3,7 @@ import express from "express";
 import http from "http";
 import { Server } from "socket.io";
 import serverConfig from "./config/serverConfig";
+import roomHandler from "./handlers/roomHandler";
 
 // Install peer server using "npm install peer -g"
 // and run it using "peerjs --port 9000 --key peerjs --path /myapp"
@@ -20,6 +21,8 @@ const io = new Server(server, {
 
 io.on("connection", (socket) => {
     console.log(`User connected: ${socket.id}`);
+
+    roomHandler(socket); // pass the socket conn to create room and join room
 
     socket.on("disconnect", () => {
         console.log(`User disconnected: ${socket.id}`);
