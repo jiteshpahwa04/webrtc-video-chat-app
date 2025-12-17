@@ -1,6 +1,8 @@
 import SocketIoClient from "socket.io-client";
-import { createContext, useEffect } from "react";
+import { createContext, useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
+import Peer from "peerjs";
+import { v4 as uuidv4 } from "uuid";
 
 const ws_server = "http://localhost:5500";
 
@@ -19,16 +21,37 @@ export const SocketProvider: React.FC<Props> = ({ children }) => {
 
     const navigate = useNavigate();
 
+    const [user, setUser] = useState<Peer>(); // new peer user
+    const [stream, setStream] = useState<MediaStream>();
+
+    const fetchParticipantsList = ({roomId, participants}: {roomId: string, participants: string[]}) => {
+        console.log(`Room ID: ${roomId}, Participants: `, participants);
+    }
+
+    const fetchUserStream = async () => {
+        const stream = await navigator.mediaDevices.getUserMedia({ video: true, audio: true }); // request for video and audio permissions, browser will prompt the user. It is a browser API!
+        setStream(stream);
+    }
+
     useEffect(() => {
+
+        const userId = uuidv4();
+        const newPeer = new Peer(userId);
+        setUser(newPeer);
+
+        fetchUserStream();
+
         const enterRoom = ({roomId}: {roomId: string}) => {
             navigate(`/room/${roomId}`);
         }
 
         socket.on("room-created", enterRoom);
+
+        socket.on("get-users", fetchParticipantsList);
     }, []);
 
     return (
-        <SocketContext.Provider value={{ socket }}>
+        <SocketContext.Provider value={{ socket, user, stream }}>
             {children}
         </SocketContext.Provider>
     )
