@@ -64,18 +64,20 @@ export const SocketProvider: React.FC<Props> = ({ children }) => {
         socket.on("user-joined", ({ peerId }: { peerId: string }) => {
             const call = user.call(peerId, stream);
             console.log("Calling new user:", peerId);
-            call.on("stream", () => {
-                dispatch(addPeerAction(peerId, stream));
+            call.on("stream", (remoteStream) => {
+                dispatch(addPeerAction(peerId, remoteStream));
             })
         });
 
-        socket.on("call", (call) => {
+        user.on("call", (call) => {
             console.log("Receiving a call");
             call.answer(stream);
-            call.on("stream", () => {
-                dispatch(addPeerAction(call.peer, stream));
+            call.on("stream", (remoteStream) => {
+                dispatch(addPeerAction(call.peer, remoteStream));
             })
-        })
+        });
+
+        socket.emit("ready");
     }, [user, stream]);
 
     return (

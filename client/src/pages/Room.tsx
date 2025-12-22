@@ -13,7 +13,7 @@ const Room : React.FC = () => {
         if (!roomId || !user) return;
         console.log("We have joined the room:", roomId);
         socket.emit("joined-room", { roomId, peerId: user._id });
-    }, [roomId, user, socket, peers]);
+    }, [roomId, user, socket]);
 
     return (
         <div>
